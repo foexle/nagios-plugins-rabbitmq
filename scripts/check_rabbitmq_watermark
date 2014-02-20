@@ -50,6 +50,10 @@ $p->add_arg(spec => 'port=i',
 $p->add_arg(spec => 'node|n=s',
     help => "Specify the node name (default is hostname)"
 );
+$p->add_arg(spec => 'name=s',
+    help => "Specify the name of the rabbit instance (default: rabbit)",
+    default => "rabbit"
+);
 $p->add_arg(spec => 'username|user|u=s',
     help => "Username (default: %s)",
     default => "guest",
@@ -87,6 +91,8 @@ $p->getopts;
 my $hostname=$p->opts->hostname;
 my $port=$p->opts->port;
 my $vhost=uri_escape($p->opts->vhost);
+my $i_name=$p->opts->name;
+
 
 my $nodename = $p->opts->node;
 
@@ -95,7 +101,7 @@ if (!$nodename) {
     $nodename = $1;
 }
 
-my $url = sprintf("http%s://%s:%d/api/nodes/rabbit\@%s", ($p->opts->ssl ? "s" : ""), $hostname, $port, $nodename);
+my $url = sprintf("http%s://%s:%d/api/nodes/%s\@%s", ($p->opts->ssl ? "s" : ""), $hostname, $port, $i_name, $nodename);
 
 my $ua = LWP::UserAgent->new(env_proxy => $p->opts->proxy);
 $ua->agent($PROGNAME.' ');

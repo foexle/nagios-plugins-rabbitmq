@@ -50,6 +50,10 @@ $p->add_arg(spec => 'port=i',
 $p->add_arg(spec => 'node|n=s',
     help => "Specify the node name (default is hostname)"
 );
+$p->add_arg(spec => 'name=s',
+    help => "Specify the name of the rabbit instance (default: rabbit)",
+    default => "rabbit"
+);
 
 $p->add_arg(
     spec => 'warning|w=s',
@@ -105,6 +109,7 @@ $p->nagios_die("You should specify four ranges for --critical argument") unless 
 # check stuff.
 
 my $hostname = $p->opts->hostname;
+my $i_name=$p->opts->name;
 
 my $nodename = $p->opts->node;
 
@@ -115,7 +120,7 @@ if (!$nodename) {
 
 my $port = $p->opts->port;
 
-my $path = "nodes/rabbit\@$nodename";
+my $path = "nodes/$i_name\@$nodename";
 my $url = sprintf("http%s://%s:%d/api/%s", ($p->opts->ssl ? "s" : ""), $hostname, $port, $path);
 
 my $ua = LWP::UserAgent->new(env_proxy => $p->opts->proxy);
